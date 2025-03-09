@@ -3,9 +3,9 @@ import React, { useRef, useState, useEffect } from "react";
 import { useFrame } from "@react-three/fiber";
 import { useGLTF, useAnimations } from "@react-three/drei";
 
-export default function Brain(props) {
+const Brain = (props) => {
   const group = useRef();
-  const { nodes, materials, animations } = useGLTF("/models/brain_hologram/scene-transformed.glb");
+  const { scene, animations } = useGLTF("/models/brain_hologram/scene-transformed.glb");
   const { actions } = useAnimations(animations, group);
 
   // Store smoothed mouse movement
@@ -15,7 +15,6 @@ export default function Brain(props) {
     if (group.current) {
       group.current.position.set(0, 2, 0); // Moves brain up slightly
     }
-
     if (actions && Object.keys(actions).length > 0) {
       actions[Object.keys(actions)[0]].play(); // Play first animation if available
     }
@@ -46,18 +45,10 @@ export default function Brain(props) {
 
   return (
     <group ref={group} {...props} dispose={null} position={[0, 3, 0]} scale={[3, 3, 3]} rotation={[0.2, 0, 0]}>
-      <group name="Sketchfab_Scene">
-        <group name="RootNode" scale={0.01}>
-          <group name="Icosphere001" rotation={[-Math.PI / 2, 0, -2.734]} scale={100}>
-            <mesh name="Icosphere001_Particle_2_0" castShadow receiveShadow geometry={nodes.Icosphere001_Particle_2_0.geometry} material={materials.Particle_2} />
-            <mesh name="Icosphere001_Particle_1_0" castShadow receiveShadow geometry={nodes.Icosphere001_Particle_1_0.geometry} material={materials.Particle_1} />
-          </group>
-        </group>
-      </group>
+      <primitive object={scene} />
     </group>
   );
-}
+};
 
-// Preload model for optimization
-useGLTF.preload("/models/brain_hologram/scene-transformed.glb");
+export default Brain;
 
